@@ -1,0 +1,29 @@
+name: CANN GitCode repos mirror periodic job
+
+on:
+  pull_request:
+    paths:
+    - '.github/workflows/**'
+    branches: [main]
+  schedule:
+    # Runs at 0th hour every day
+    - cron:  '0 0 * * *'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    steps:
+    - name: Mirror the gitee/cann org repos to github/cann.
+      uses: Yikun/hub-mirror-action@master
+      with:
+        src: gitcode/cann
+        dst: github/cann
+        dst_key: ${{ secrets.SYNC_SSH_PRIVATE_KEY }}
+        dst_token:  ${{ secrets.SYNC_TOKEN_GITHUB}}
+        account_type: org
+        clone_style: ssh 
+        force_update: true
+        static_list: "opbase, ops-math, ops-cv, ops-nn, ops-transformer, cann-recipes-infer, asnumpy, catlass, ascend-boost-comm, ascend-transformer-boost, hixl"
+        debug: true
+        lfs: true
